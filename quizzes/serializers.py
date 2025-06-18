@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Quiz, Question, Choice, Serie, Categoria
+from django.contrib.auth.models import User
 
 class ChoiceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -45,3 +46,12 @@ class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categoria
         fields = ['id', 'description']
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email']

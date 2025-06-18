@@ -6,8 +6,12 @@ from .serializers import (
     QuizSerializer, QuizDetailSerializer,
     QuestionSerializer, QuestionDetailSerializer,
     ChoiceSerializer, AnswerSerializer,
-    SerieSerializer, CategoriaSerializer
+    SerieSerializer, CategoriaSerializer,
+    LoginSerializer, UserSerializer
 )
+from django.contrib.auth import authenticate
+from rest_framework.views import APIView
+
 
 class QuizViewSet(viewsets.ModelViewSet):
     queryset = Quiz.objects.all()
@@ -64,3 +68,17 @@ class SerieViewSet(viewsets.ModelViewSet):
 class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer
+
+class LoginView(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            username = serializer.validated_data['username']
+            password = serializer.validated_data['password']
+            user = authenticate(username=username, password=password)
+            if user:
+                user_serializer = UserSerializer(user)
+                return Response(user_serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
