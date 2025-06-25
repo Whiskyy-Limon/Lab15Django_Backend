@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Quiz, Question, Choice, Serie, Categoria
 from django.contrib.auth.models import User
-
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 class ChoiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Choice
@@ -55,3 +55,14 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email']
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Agregamos información adicional al token
+        token['name'] = user.first_name  # O user.get_full_name()
+        token['email'] = user.email
+
+        return token

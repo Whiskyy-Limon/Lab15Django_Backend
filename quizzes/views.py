@@ -1,17 +1,21 @@
-from rest_framework import viewsets, status
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from .models import Quiz, Question, Choice, Serie, Categoria
+from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import (
+    CustomTokenObtainPairSerializer,
     QuizSerializer, QuizDetailSerializer,
     QuestionSerializer, QuestionDetailSerializer,
     ChoiceSerializer, AnswerSerializer,
     SerieSerializer, CategoriaSerializer,
-    LoginSerializer, UserSerializer
+    LoginSerializer, UserSerializer,
 )
+from .models import Quiz, Question, Choice, Serie, Categoria
 from django.contrib.auth import authenticate
+from rest_framework import viewsets
 from rest_framework.views import APIView
+from rest_framework.decorators import action
 
+# DEJAMOS SOLO ESTA DEFINICIÓN:
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 
 class QuizViewSet(viewsets.ModelViewSet):
     queryset = Quiz.objects.all()
